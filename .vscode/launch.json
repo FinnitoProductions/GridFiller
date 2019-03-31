@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - RobotTest",
+            "request": "launch",
+            "mainClass": "RobotTest",
+            "projectName": "GridFiller"
+        }
+    ]
+}
