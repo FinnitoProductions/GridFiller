@@ -1,4 +1,4 @@
-   <project name="RobotTest" basedir="." default="rebuild-run">
+   <project name="GridFiller" basedir="." default="rebuild-run">
 
        <property name="src.dir"     value="src"/>
 

@@ -1,5 +1,5 @@
 /*
- * Represents a Shape, with its type dictated by various possible shape factors (a.k.a. circularity).
+ * Represents a shape, with its type dictated by various possible shape factors (a.k.a. circularity).
  * 
  * @author Finn Frankis
  * @since 3/30/19
