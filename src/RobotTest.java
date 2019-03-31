@@ -36,7 +36,7 @@ public class RobotTest {
     private static final int SCREEN_WIDTH = 1439; 
     
     private static final String SCREENSHOT_FILE_NAME = "saved.png";
-    private static final String CAMERA_SOUND_FILE_NAME = "camerafocus.wav";
+    private static final String CAMERA_SOUND_FILE_NAME = "camfocus.wav";
     public static void main(String[] args) throws Exception {
         r = new Robot();
         
