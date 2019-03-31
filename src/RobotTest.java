@@ -36,10 +36,8 @@ public class RobotTest {
     private static final int SCREEN_WIDTH = 1439; 
     
     private static final String SCREENSHOT_FILE_NAME = "saved.png";
-    
-    public static void main(String[] args)
-        throws Exception
-    {
+    private static final String CAMERA_SOUND_FILE_NAME = "camerafocus.wav";
+    public static void main(String[] args) throws Exception {
         r = new Robot();
         
         while (true) {
@@ -54,7 +52,7 @@ public class RobotTest {
     public static void takeScreenshot () throws Exception {
         playCameraSound();
         Thread.sleep(2000);
-        ImageIO.write(r.createScreenCapture(new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)), "png", new File("saved.png"));
+        ImageIO.write(r.createScreenCapture(new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)), "png", new File(SCREENSHOT_FILE_NAME));
     }
     
     public static List<MatOfPoint> filterContours (List<MatOfPoint> contours, int minArea, int maxArea, int minPerimeter, int maxPerimeter, double minAreaToPerimSq, double maxAreaToPerimSq, Shape.ShapeType shape) {
@@ -67,9 +65,8 @@ public class RobotTest {
         	double area = Imgproc.contourArea(contour);
         	double perimeter = Imgproc.arcLength(new MatOfPoint2f(contour.toArray()), true);
         	double areaToPerimSq = area / (perimeter * perimeter);
-        	
+
         	if (area < minArea || perimeter < minPerimeter || area > maxArea || perimeter > maxPerimeter || areaToPerimSq < minAreaToPerimSq || areaToPerimSq > maxAreaToPerimSq || Shape.ShapeType.getShape(area, perimeter) != shape) {
-        		
         		newContours.remove(i);
         		i--;
         	}
@@ -78,27 +75,31 @@ public class RobotTest {
         return newContours;
     }
     
-    public static void playCameraSound () { playSound("camfocus.wav"); }
+    public static void playCameraSound () { playSound(CAMERA_SOUND_FILE_NAME); }
     
     public static List<MatOfPoint> processImage (String filename) {
         Mat m = Imgcodecs.imread(filename, Imgcodecs.IMREAD_GRAYSCALE);
         
-        Core.inRange(m, new Scalar(254, 254, 254), new Scalar(255, 255, 255), m);
+        final Scalar MIN_COLOR_VAL = new Scalar(254, 254, 254); // nearly white
+        final Scalar MAX_COLOR_VAL = new Scalar(255, 255, 255); // white 
+        Core.inRange(m, MIN_COLOR_VAL, MAX_COLOR_VAL, m);
         Imgcodecs.imwrite("savedRangeFiltered.png", m);
         
         List<MatOfPoint> contours = new ArrayList<>();
         Imgproc.findContours(m,contours,new Mat(),Imgproc.RETR_TREE,Imgproc.CHAIN_APPROX_SIMPLE);
         
         contours = filterContours(contours, 10, Integer.MAX_VALUE, 15, Integer.MAX_VALUE, 0.061, 0.064, Shape.ShapeType.SQUARE);
-        Imgproc.drawContours(m, contours, -1, new Scalar(100, 100, 100), 3);
+        
+        final Scalar DRAWN_CONTOUR_COLOUR = new Scalar(100, 100, 100); //gray
+        final int NUM_CONTOURS = -1; // draw all
+        Imgproc.drawContours(m, contours, NUM_CONTOURS, DRAWN_CONTOUR_COLOUR, 3);
         Imgcodecs.imwrite("savedcontours.png", m);
         
         return contours;
     }
     
     public static List<Shape> getShapes (List<MatOfPoint> contours) {
-        Map<Shape, Integer> shapes = new TreeMap<Shape, Integer>();
-        List<Shape> shapeDuplicates = new ArrayList<Shape>();
+        List<Shape> shapes = new ArrayList<Shape>();
         for (MatOfPoint contour : contours) {
             double area = Imgproc.contourArea(contour);
             
@@ -108,14 +109,10 @@ public class RobotTest {
             double perimeter = Imgproc.arcLength(newContour, true);
             
             Shape s = new Shape (area, perimeter, rect.x, rect.y);
-            
-            if (!shapes.keySet().contains(s)) {shapes.put(s, 0);}
-            
-            shapes.put(s, shapes.get(s) + 1);
-            shapeDuplicates.add(s);
+            shapes.add(s);
         }
         
-        return shapeDuplicates;
+        return shapes;
     }
     
     public static void clickOnShapes (List<Shape> shapes) throws Exception {
@@ -128,16 +125,16 @@ public class RobotTest {
     }
     
     public static synchronized void playSound(final String url) {
-    	      try {
-    	        Clip clip = AudioSystem.getClip();
-    	        AudioInputStream inputStream = AudioSystem.getAudioInputStream(
-    	          new File(url));
-    	        clip.open(inputStream);
-
-    	        clip.start(); 
-    	      } catch (Exception e) {
-    	        e.printStackTrace();
-    	      }
+	  try {
+	    Clip clip = AudioSystem.getClip();
+	    AudioInputStream inputStream = AudioSystem.getAudioInputStream(
+	      new File(url));
+	    clip.open(inputStream);
+	
+	    clip.start(); 
+	  } catch (Exception e) {
+	    e.printStackTrace();
+	  }
     	      
     }
 }
