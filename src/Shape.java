@@ -16,7 +16,7 @@ public class Shape implements Comparable {
 		public static ShapeType getShape (double area, double perimeter) {
 			double factor = getShapeFactor (area, perimeter);
 			for (ShapeType s : ShapeType.values()) {
-				if (factor > s.minShapeFactor && factor < s.maxShapeFactor) {
+				if (factor > s.minShapeFactor && factor <= s.maxShapeFactor) {
 					return s;
 				}
 			}
