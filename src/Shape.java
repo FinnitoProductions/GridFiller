@@ -1,4 +1,9 @@
-
+/*
+ * Represents a Shape, with its type dictated by various possible shape factors (a.k.a. circularity).
+ * 
+ * @author Finn Frankis
+ * @since 3/30/19
+ */
 public class Shape implements Comparable {
     public static final double THRESHOLD = 0.01;
 	

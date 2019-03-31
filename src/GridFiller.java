@@ -27,8 +27,13 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 
-
-public class RobotTest {
+/*
+ * Uses image processing and Java's Robot to fill in a grid of checkboxes automatically.
+ * 
+ * @author Finn Frankis
+ * @since 3/28/19
+ */
+public class GridFiller {
     static{ System.loadLibrary(Core.NATIVE_LIBRARY_NAME); }
     private static Robot r;
     
